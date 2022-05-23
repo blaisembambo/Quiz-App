@@ -23,13 +23,12 @@ body{
 }
 .container{
   background-color: #FFFFFF;
-  height: 98%;
+  min-height: 98%;
   width: 30em;
   box-sizing:border-box;
 }
-.sign_up_page_container{
+.welcome_page_container{
   padding: 4.2em 2.5em;
-  display: none;
 }
 .presentation_text{
   text-align: center;
@@ -54,12 +53,13 @@ form input[type=text]{
   
 
 }
-.sign_up_page_container label{
+.welcome_page_container label{
   font-size: 0.8em;
 }
 .error_msg{
   color: red;
   font-size: 0.75em;
+  visibility: hidden;
 }
 .btn_wrapper{
   text-align: center;
@@ -79,7 +79,6 @@ form input[type=text]{
 .questions_page_container{
   padding: 3em 2.5em;
   font-size: 1.1em;
-  display: none;
 }
 .question{
   text-align: center;
@@ -147,14 +146,13 @@ form input[type=text]{
 
 }
 .btn_next{
-  opacity: 0.5;
+  opacity: 0.42;
 }
 .succeeded_test_page, .failure_test_page{
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  display: none;
 }
 .name{
   font-size: 2em;
