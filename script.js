@@ -1,6 +1,7 @@
 let contentContainer = document.querySelector('.container');
 let user = {};
-let userCorrectAnswers = 0;
+let userCorrectAnswers = 2;
+let questionNumber = 0;
 
 let questions = [
 'question1',
@@ -31,18 +32,20 @@ let answersToQuest = [
 
 let numberOfQuestions = questions.length;
 
-
 /******************************user signing up starts here************************ */
-let formWelcomePage = document.querySelector('form');
-let formreturn = formWelcomePage.addEventListener("submit", function(event){
+let formWelcomePage = document.querySelector('.welcome_page_form');
+formWelcomePage.addEventListener("submit", function(event){
+    event.preventDefault();
     let formElts = this.elements;
     let error = false
     for(let i = 0; i < formElts.length - 1; i++){
        if(formElts[i].value.trim().length == 0){
         formElts[i].parentElement.querySelector('span').style = "visibility:visible;";
+        formElts[i].style = 'border-color:#FF3838';
         error = true;
        }else{
         formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
+        formElts[i].style = 'border-color:#DDDDDD';
        }
     }
 
@@ -53,17 +56,84 @@ let formreturn = formWelcomePage.addEventListener("submit", function(event){
         for(let i = 0; i < formElts.length - 1; i++){
             user[formElts[i].id] = formElts[i].value;
          }
-        testFunc(questions,answersToQuest,correctAnswers,this) 
-      /*  displaySucceedingTest(this,user); */
-    }
-    
+         answerSubmissionFunc(questions,answersToQuest,correctAnswers,this.parentElement);
+    } 
 });
 /******************************user signing up ends here************************ */
 
-
 /******************************test page starts here************************ */
+let i;
+window.answerSubmissionFunc = function(quest,ans,correctAns,eltToRemove){
+    i = questionNumber;
+
+    if (questionNumber < questions.length){
+        eltToRemove.remove();
+        document.querySelector('body').appendChild(testPageDesign(quest[i],ans[i],i));
+        progressBarAndTimingManagementFunc();
+        questionNumber++;
+    }else{
+        eltToRemove.remove();
+        document.querySelector('body').appendChild(userOutputPage(user,userCorrectAnswers,questions));
+    } 
+}
+
+/******progressbar, timing on question management starts here******** */
+let setIntervalForQuestionTime;
+let clearIntervalForQuestionTime;
+let setIntervalForTimeDisplay;
+let clearIntervalForTimeDisplay;
+window.progressBarAndTimingManagementFunc = function(){
+    let timeCounter = 60;
+    let progresssEvolution = document.querySelector('.progress_evolution');
+    let progresssEvolutionStyles = getComputedStyle(progresssEvolution, null);
+    let progresssEvolutionWidth = parseInt(progresssEvolutionStyles.getPropertyValue("width"));
+    let progressEvolutionWidthToSubstract = progresssEvolutionWidth/6000;
+    let milisecondCounter = 100;
+
+    clearIntervalForTimeDisplay = function(){
+        clearInterval(setIntervalForTimeDisplay);
+    }
+
+    setIntervalForTimeDisplay = setInterval(function(){
+        progresssEvolutionWidth -= progressEvolutionWidthToSubstract;
+        progresssEvolution.style = "width : " + progresssEvolutionWidth + "px";
+        milisecondCounter--;
+        if(milisecondCounter === 0){
+            timeCounter--;
+            document.querySelector('.time_display').innerHTML = timeCounter;
+            milisecondCounter = 100;
+        } 
+        if(timeCounter === 0){
+            clearIntervalForTimeDisplay();
+            contentContainer = document.querySelector('div');
+            answerSubmissionFunc(questions,answersToQuest,correctAnswers,contentContainer);
+        }
+        },10);
+}
+/******progressbar, timing on question management ends here******** */
+
+/*****************test quesions page starts here**************** */
 window.testPageDesign = function(question,answers,iteration){
 
+    function radioBtnsEventFunc(e){
+        let questionsPgFrm = document.querySelector('.questions_page_container');
+        let labels = questionsPgFrm.querySelectorAll('label');
+        let customRadioBtns = questionsPgFrm.querySelectorAll('.custom_radio_btn');
+        let btnNext = document.querySelector('.btn_next');
+        if(e.target.checked){
+            btnNext.disabled = false;
+            btnNext.style = 'opacity: 1';
+            for(let i = 0; i < customRadioBtns.length; i++){
+                if(customRadioBtns[i] === e.target.parentElement.querySelector('.custom_radio_btn')){
+                    customRadioBtns[i].style = 'background: #028A3D; border-color: #028A3D';
+                    labels[i].style = 'border-color: #028A3D';
+                } else{
+                    customRadioBtns[i].style = 'background: #FFFFFF; border-color: #DDDDDD';
+                    labels[i].style = 'border-color: #DDDDDD';
+                }
+            }
+        }
+    }
     let questionsPageContainer = document.createElement('div');
     questionsPageContainer.setAttribute('class','container questions_page_container');
     
@@ -82,12 +152,12 @@ window.testPageDesign = function(question,answers,iteration){
     progressBarCaption.appendChild(questionInCaption);
     let questionTrack = document.createElement('span');
     questionTrack.setAttribute('class','question_track');
-    let questionNumber = iteration + 1;
-    questionTrack.innerHTML = questionNumber + '/' + numberOfQuestions;
+    let questNumber = iteration + 1;
+    questionTrack.innerHTML = questNumber + '/' + numberOfQuestions;
     progressBarCaption.appendChild(questionTrack);
     let timeDisplay = document.createElement('span');
     timeDisplay.setAttribute('class','time_display');
-    timeDisplay.innerHTML = "30";
+    timeDisplay.innerHTML = "60";
     progressBarCaption.appendChild(timeDisplay);
 
     progressBarTool.appendChild(progressBarCaption);
@@ -104,6 +174,23 @@ window.testPageDesign = function(question,answers,iteration){
 
     let questionsPageForm = document.createElement('form');
     questionsPageForm.setAttribute('class','questions_page_form');
+    questionsPageForm.addEventListener('submit',function(event){
+        event.preventDefault();
+        clearIntervalForTimeDisplay();
+
+        let userAnswer;
+        let radioInputs = this.querySelectorAll('input[type = radio]');
+        for(let i = 0; i < radioInputs.length; i++){
+            if(radioInputs[i].checked){
+                userAnswer = i;
+            } 
+        }
+        if(correctAnswers[questionNumber] === userAnswer) userCorrectAnswers++;
+
+
+        contentContainer = document.querySelector('div');
+        answerSubmissionFunc(questions,answersToQuest,correctAnswers,contentContainer);
+    }); 
 
     let answer1Label = document.createElement('label');
     answer1Label.setAttribute('class','answer answer1');
@@ -113,6 +200,7 @@ window.testPageDesign = function(question,answers,iteration){
     answer1Radio.setAttribute('value','0');
     answer1Radio.setAttribute('name','answer');
     answer1Radio.setAttribute('id','answer1');
+    answer1Radio.addEventListener('change',radioBtnsEventFunc);
     answer1Label.appendChild(answer1Radio);
     let customRadioBtn1 = document.createElement('div');
     customRadioBtn1.setAttribute('class','custom_radio_btn custom_radio_btn1');
@@ -132,6 +220,7 @@ window.testPageDesign = function(question,answers,iteration){
     answer2Radio.setAttribute('value','1');
     answer2Radio.setAttribute('name','answer');
     answer2Radio.setAttribute('id','answer2');
+    answer2Radio.addEventListener('change',radioBtnsEventFunc);
     answer2Label.appendChild(answer2Radio);
     let customRadioBtn2 = document.createElement('div');
     customRadioBtn2.setAttribute('class','custom_radio_btn custom_radio_btn2');
@@ -151,6 +240,7 @@ window.testPageDesign = function(question,answers,iteration){
     answer3Radio.setAttribute('value','2');
     answer3Radio.setAttribute('name','answer');
     answer3Radio.setAttribute('id','answer3');
+    answer3Radio.addEventListener('change',radioBtnsEventFunc);
     answer3Label.appendChild(answer3Radio);
     let customRadioBtn3 = document.createElement('div');
     customRadioBtn3.setAttribute('class','custom_radio_btn custom_radio_btn3');
@@ -170,6 +260,7 @@ window.testPageDesign = function(question,answers,iteration){
     answer4Radio.setAttribute('value','3');
     answer4Radio.setAttribute('name','answer');
     answer4Radio.setAttribute('id','answer4');
+    answer4Radio.addEventListener('change',radioBtnsEventFunc);
     answer4Label.appendChild(answer4Radio);
     let customRadioBtn4 = document.createElement('div');
     customRadioBtn4.setAttribute('class','custom_radio_btn custom_radio_btn4');
@@ -193,6 +284,7 @@ window.testPageDesign = function(question,answers,iteration){
     btnNext.setAttribute('type','submit');
     btnNext.setAttribute('value','Suivant');
     btnNext.setAttribute('class','btn btn_next');
+    btnNext.setAttribute('disabled','true');
     buttonsWrapper.appendChild(btnNext);
 
     questionsPageForm.appendChild(buttonsWrapper);
@@ -200,22 +292,54 @@ window.testPageDesign = function(question,answers,iteration){
     questionsPageContainer.appendChild(questionsPageForm);
 
     return questionsPageContainer;
-
 }
-window.testFunc = function(quest,ans,correctAns,invoquingElt){
-    invoquingElt.parentElement.remove();
-    document.querySelector('body').appendChild(testPageDesign(quest[0],ans[0],0));
-/*     for(let i = 0; i < quest.length; i++){
-        testPageDesign(quest[i],ans[i],i);
-    } */
-}
-
-
 /******************************test page ends here************************ */
+
+/*******************************user output page starts here************** */
+window.userOutputPage = function(user,correctAnsws,quests){
+    let userOutputConatiner = document.createElement('div');
+    let userOutputConatinerClasses = (correctAnsws < (quests.length) / 2) ? "container failure_test_page" : "container succeeded_test_page";
+    userOutputConatiner.setAttribute('class', userOutputConatinerClasses);
+
+    let contentContainer = document.createElement('div');
+    contentContainer.setAttribute('class','content_container');
+
+    let userName = document.createElement('h2');
+    userName.setAttribute('class','name');
+    userName.innerHTML = user.name;
+    contentContainer.appendChild(userName);
+
+    let userEmail = document.createElement('p');
+    userEmail.setAttribute('class','email');
+    userEmail.innerHTML = user.email;
+    contentContainer.appendChild(userEmail);
+
+    let outputIcon = document.createElement('div');
+    let outputIconClass = (correctAnsws < (quests.length) / 2) ? "failure_icon" : "success_icon";
+    outputIcon.setAttribute('class', outputIconClass);
+    contentContainer.appendChild(outputIcon);
+
+    let quizSuccess = document.createElement('p');
+    quizSuccess.setAttribute('class','quiz_success');
+    let quizResultText = (correctAnsws < 10 ? '0' + correctAnsws : correctAnsws) + '/' + quests.length;
+    quizSuccess.innerHTML = quizResultText;
+    contentContainer.appendChild(quizSuccess);
+
+    let outputForm = document.createElement('form');
+    let homeButton = document.createElement('button');
+    homeButton.setAttribute('class','btn btn_home');
+    homeButton.innerHTML = 'Accueil';
+    outputForm.appendChild(homeButton);
+    contentContainer.appendChild(outputForm);
+
+    userOutputConatiner.appendChild(contentContainer);
+
+    return userOutputConatiner;
+}
+/*******************************user output page ends here************** */
 
 /******************************display succeeding test starts here************************ */
 window.displaySucceedingTest = function(invoquingElt,user,score){
-    alert('from displayfunc');
     alert(user.name + " " + user.email);
     invoquingElt.parentElement.remove();
     let succeededTestPageContainer = document.createElement('div');
@@ -223,7 +347,6 @@ window.displaySucceedingTest = function(invoquingElt,user,score){
     succeededTestPageContainer.innerHTML = 'hello world';
     succeededTestPageContainer.style.display = 'block';
     document.querySelector('body').appendChild(succeededTestPageContainer);
-    alert(succeededTestPageContainer.parentElement);
 }
 /******************************display succeeding test ends here************************ */
 

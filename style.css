@@ -57,7 +57,7 @@ form input[type=text]{
   font-size: 0.8em;
 }
 .error_msg{
-  color: red;
+  color: #FF3838;
   font-size: 0.75em;
   visibility: hidden;
 }
@@ -101,7 +101,7 @@ form input[type=text]{
   border-radius: 0.5em;
 }
 .progress_evolution{
-  width: 50%;
+  width: 100%;
   background: #028A3D;
 }
 .questions_page_container label{
@@ -166,10 +166,10 @@ form input[type=text]{
   width: 9em;
   height: 9em;
   margin: 2.5em auto;
-  background-size: 100% 100%;
 }
 .success_icon{
   background: url('images/success_icon.png') no-repeat;
+  background-size: 100% 100%;
 }
 .quiz_success{
   font-weight: 700;
