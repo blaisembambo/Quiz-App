@@ -1,6 +1,6 @@
 let contentContainer = document.querySelector('.container');
 let user = {};
-let userCorrectAnswers = 2;
+let userCorrectAnswers = 0;
 let questionNumber = 0;
 
 let questions = [
@@ -8,7 +8,7 @@ let questions = [
 'question2',
 'question3'
 ];
-let correctAnswers = [1,4,3];
+let correctAnswers = [0,1,3];
 let answersToQuest = [
     [
         'answer option 1 to question 1',
@@ -185,7 +185,8 @@ window.testPageDesign = function(question,answers,iteration){
                 userAnswer = i;
             } 
         }
-        if(correctAnswers[questionNumber] === userAnswer) userCorrectAnswers++;
+        alert(questNumber);alert(correctAnswers);alert(userAnswer);
+        if(correctAnswers[questionNumber - 1] === userAnswer) userCorrectAnswers++;
 
 
         contentContainer = document.querySelector('div');
