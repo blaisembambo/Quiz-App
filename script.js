@@ -105,6 +105,17 @@ window.progressBarAndTimingManagementFunc = function(){
         } 
         if(timeCounter === 0){
             clearIntervalForTimeDisplay();
+            
+            let userAnswer;
+            let radioInputs = document.querySelector('form').querySelectorAll('input[type = radio]');
+           
+            for(let i = 0; i < radioInputs.length; i++){
+                if(radioInputs[i].checked){
+                    userAnswer = i;
+                } 
+            }
+            if(correctAnswers[questionNumber - 1] === userAnswer) userCorrectAnswers++;    
+
             contentContainer = document.querySelector('div');
             answerSubmissionFunc(questions,answersToQuest,correctAnswers,contentContainer);
         }
@@ -185,9 +196,8 @@ window.testPageDesign = function(question,answers,iteration){
                 userAnswer = i;
             } 
         }
-        alert(questNumber);alert(correctAnswers);alert(userAnswer);
+        
         if(correctAnswers[questionNumber - 1] === userAnswer) userCorrectAnswers++;
-
 
         contentContainer = document.querySelector('div');
         answerSubmissionFunc(questions,answersToQuest,correctAnswers,contentContainer);
@@ -279,6 +289,10 @@ window.testPageDesign = function(question,answers,iteration){
     let btnQuit = document.createElement('button');
     btnQuit.setAttribute('class','btn btn_quit');
     btnQuit.innerHTML = 'Quitter';
+    btnQuit.addEventListener('click',function(event){
+        document.querySelector('div').remove();
+        document.querySelector('body').appendChild(userOutputPage(user,userCorrectAnswers,questions));
+    });
     buttonsWrapper.appendChild(btnQuit);
     
     let btnNext = document.createElement('input');
@@ -330,6 +344,10 @@ window.userOutputPage = function(user,correctAnsws,quests){
     let homeButton = document.createElement('button');
     homeButton.setAttribute('class','btn btn_home');
     homeButton.innerHTML = 'Accueil';
+    homeButton.addEventListener('click', function(event){
+        document.querySelector('div').remove();
+        document.querySelector('body').appendChild(contentContainer);
+    });
     outputForm.appendChild(homeButton);
     contentContainer.appendChild(outputForm);
 
@@ -338,24 +356,6 @@ window.userOutputPage = function(user,correctAnsws,quests){
     return userOutputConatiner;
 }
 /*******************************user output page ends here************** */
-
-/******************************display succeeding test starts here************************ */
-window.displaySucceedingTest = function(invoquingElt,user,score){
-    alert(user.name + " " + user.email);
-    invoquingElt.parentElement.remove();
-    let succeededTestPageContainer = document.createElement('div');
-    succeededTestPageContainer.setAttribute('class','container succeeded_test_page');
-    succeededTestPageContainer.innerHTML = 'hello world';
-    succeededTestPageContainer.style.display = 'block';
-    document.querySelector('body').appendChild(succeededTestPageContainer);
-}
-/******************************display succeeding test ends here************************ */
-
-/******************************display failing test starts here************************ */
-function displaySucceedingTest(user,correctAnswers){
-
-}
-/******************************display failing test ends here************************ */
 
 
 
