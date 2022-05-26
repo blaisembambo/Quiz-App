@@ -341,13 +341,16 @@ window.userOutputPage = function(user,correctAnsws,quests){
     contentContainer.appendChild(quizSuccess);
 
     let outputForm = document.createElement('form');
-    let homeButton = document.createElement('button');
-    homeButton.setAttribute('class','btn btn_home');
-    homeButton.innerHTML = 'Accueil';
-    homeButton.addEventListener('click', function(event){
+    outputForm.addEventListener('submit', function(event){
+        event.preventDefault();
         document.querySelector('div').remove();
         document.querySelector('body').appendChild(contentContainer);
     });
+    
+    let homeButton = document.createElement('input');
+    homeButton.setAttribute('type','submit');
+    homeButton.setAttribute('value','Accueil');
+    homeButton.setAttribute('class','btn btn_home');
     outputForm.appendChild(homeButton);
     contentContainer.appendChild(outputForm);
 
