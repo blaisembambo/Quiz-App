@@ -8,7 +8,11 @@ let questions = [
 'question2',
 'question3'
 ];
-let correctAnswers = [0,1,3];
+let correctAnswers = [
+'answer option 1 to question 1',
+'answer option 2 to question 2',
+'answer option 4 to question 3'
+];
 let answersToQuest = [
     [
         'answer option 1 to question 1',
@@ -110,10 +114,10 @@ window.progressBarAndTimingManagementFunc = function(){
            
             for(let i = 0; i < radioInputs.length; i++){
                 if(radioInputs[i].checked){
-                    userAnswer = i;
+                    userAnswer = radioInputs[i].parentElement.querySelector('span').innerHTML;
                 } 
             }
-            if(correctAnswers[questionNumber - 1] === userAnswer) userCorrectAnswers++;    
+            if(correctAnswers[questionNumber - 1] == userAnswer) userCorrectAnswers++;    
 
             contentContainer = document.querySelector('div');
             answerSubmissionFunc(questions,answersToQuest,correctAnswers,contentContainer);
@@ -192,11 +196,11 @@ window.testPageDesign = function(question,answers,iteration){
         let radioInputs = this.querySelectorAll('input[type = radio]');
         for(let i = 0; i < radioInputs.length; i++){
             if(radioInputs[i].checked){
-                userAnswer = i;
+                userAnswer = radioInputs[i].parentElement.querySelector('span').innerHTML;
             } 
         }
         
-        if(correctAnswers[questionNumber - 1] === userAnswer) userCorrectAnswers++;
+        if(correctAnswers[questionNumber - 1] == userAnswer) userCorrectAnswers++;
 
         contentContainer = document.querySelector('div');
         answerSubmissionFunc(questions,answersToQuest,correctAnswers,contentContainer);
