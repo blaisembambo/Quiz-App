@@ -52,7 +52,6 @@ formWelcomePage.addEventListener("submit", function(event){
     if(error){
         event.preventDefault();
     }else{
-        let fieldsValues = [];
         for(let i = 0; i < formElts.length - 1; i++){
             user[formElts[i].id] = formElts[i].value;
          }
@@ -341,10 +340,10 @@ window.userOutputPage = function(user,correctAnsws,quests){
     contentContainer.appendChild(quizSuccess);
 
     let outputForm = document.createElement('form');
-    outputForm.addEventListener('submit', function(event){
-        event.preventDefault();
-        document.querySelector('div').remove();
-        document.querySelector('body').appendChild(contentContainer);
+    outputForm.addEventListener('submit', function(){
+        let outputPageElts = document.querySelector('div').firstElementChild.children;
+      outputPageElts.forEach(elt => elt.remove());
+   document.querySelector('div').replaceWith(contentContainer);
     });
     
     let homeButton = document.createElement('input');
