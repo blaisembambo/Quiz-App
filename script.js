@@ -71,7 +71,8 @@ window.answerSubmissionFunc = function(quest,ans,correctAns,eltToRemove){
     let answerOptionsRandomized; 
     if (questionNumber < questions.length){
         eltToRemove.remove();
-        answerOptionsRandomized = ans[i].sort(() => 5 - (Math.floor(Math.random()*10 + 1)));
+        answerOptionsRandomized = ans[i].sort(() => 5 - Math.floor(Math.random()*10) + 1 );
+      
         document.querySelector('body').appendChild(testPageDesign(quest[i],answerOptionsRandomized,i));
         progressBarAndTimingManagementFunc();
         questionNumber++;
