@@ -68,10 +68,11 @@ formWelcomePage.addEventListener("submit", function(event){
 let i;
 window.answerSubmissionFunc = function(quest,ans,correctAns,eltToRemove){
     i = questionNumber;
-
+    let answerOptionsRandomized; 
     if (questionNumber < questions.length){
         eltToRemove.remove();
-        document.querySelector('body').appendChild(testPageDesign(quest[i],ans[i],i));
+        answerOptionsRandomized = ans[i].sort(() => 5 - (Math.floor(Math.random()*10 + 1)));
+        document.querySelector('body').appendChild(testPageDesign(quest[i],answerOptionsRandomized,i));
         progressBarAndTimingManagementFunc();
         questionNumber++;
     }else{
