@@ -3,37 +3,6 @@ let user = {};
 let userCorrectAnswers = 0;
 let questionNumber = 0;
 
-let questions = [
-'question1',
-'question2',
-'question3'
-];
-let correctAnswers = [
-'answer option 1 to question 1',
-'answer option 2 to question 2',
-'answer option 4 to question 3'
-];
-let answersToQuest = [
-    [
-        'answer option 1 to question 1',
-        'answer option 2 to question 1',
-        'answer option 3 to question 1',
-        'answer option 4 to question 1'
-    ],
-    [
-        'answer option 1 to question 2',
-        'answer option 2 to question 2',
-        'answer option 3 to question 2',
-        'answer option 4 to question 2'
-    ],
-    [
-        'answer option 1 to question 3',
-        'answer option 2 to question 3',
-        'answer option 3 to question 3',
-        'answer option 4 to question 3'
-    ],
-];
-
 let numberOfQuestions = questions.length;
 
 /******************************user signing up starts here************************ */
@@ -43,6 +12,23 @@ formWelcomePage.addEventListener("submit", function(event){
     let formElts = this.elements;
     let error = false
     for(let i = 0; i < formElts.length - 1; i++){
+        if (formElts[i].id == "email" && !/^[a-z0-9._-]+@[a-z0-9._-]+\.[a-z]{2,6}$/.test(formElts[i].value.trim())) {
+                formElts[i].parentElement.querySelector('span').style = "visibility:visible;";
+                formElts[i].style = 'border-color:#FF3838';
+                error = true;
+        }else if (formElts[i].id == "email" && /^[a-z0-9._-]+@[a-z0-9._-]+\.[a-z]{2,6}$/.test(formElts[i].value.trim())){
+            formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
+            formElts[i].style = 'border-color:#DDDDDD';
+        } 
+        if(formElts[i].id == "name" && formElts[i].value.trim().length == 0){
+            formElts[i].parentElement.querySelector('span').style = "visibility:visible;";
+            formElts[i].style = 'border-color:#FF3838';
+            error = true;
+        }else if(formElts[i].id == "name" && formElts[i].value.trim().length > 0){
+            formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
+            formElts[i].style = 'border-color:#DDDDDD'; 
+        }
+/* 
        if(formElts[i].value.trim().length == 0){
         formElts[i].parentElement.querySelector('span').style = "visibility:visible;";
         formElts[i].style = 'border-color:#FF3838';
@@ -50,13 +36,15 @@ formWelcomePage.addEventListener("submit", function(event){
        }else{
         formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
         formElts[i].style = 'border-color:#DDDDDD';
-       }
+       } */
     }
 
     if(error){
         event.preventDefault();
     }else{
         for(let i = 0; i < formElts.length - 1; i++){
+            formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
+            formElts[i].style = 'border-color:#DDDDDD';
             user[formElts[i].id] = formElts[i].value;
          }
          answerSubmissionFunc(questions,answersToQuest,correctAnswers,this.parentElement);
@@ -108,6 +96,9 @@ window.progressBarAndTimingManagementFunc = function(){
             document.querySelector('.time_display').innerHTML = timeCounter;
             milisecondCounter = 100;
         } 
+        if(timeCounter < 30){
+            progresssEvolution.classList.add('progress_evolution_red');
+        }
         if(timeCounter === 0){
             clearIntervalForTimeDisplay();
             
@@ -203,6 +194,7 @@ window.testPageDesign = function(question,answers,iteration){
         }
         
         if(correctAnswers[questionNumber - 1] == userAnswer) userCorrectAnswers++;
+
 
         contentContainer = document.querySelector('div');
         answerSubmissionFunc(questions,answersToQuest,correctAnswers,contentContainer);

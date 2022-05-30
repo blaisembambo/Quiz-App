@@ -108,6 +108,9 @@ outline:none;
   width: 100%;
   background: #028A3D;
 }
+.progress_evolution_red{
+  background: red;
+}
 .questions_page_container label{
   border: 0.0625em solid #DDDDDD;
   display: block;
