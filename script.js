@@ -20,23 +20,14 @@ formWelcomePage.addEventListener("submit", function(event){
             formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
             formElts[i].style = 'border-color:#DDDDDD';
         } 
-        if(formElts[i].id == "name" && formElts[i].value.trim().length == 0){
+        if(formElts[i].id == "name" && formElts[i].value.trim().length < 2){
             formElts[i].parentElement.querySelector('span').style = "visibility:visible;";
             formElts[i].style = 'border-color:#FF3838';
             error = true;
-        }else if(formElts[i].id == "name" && formElts[i].value.trim().length > 0){
+        }else if(formElts[i].id == "name" && formElts[i].value.trim().length >= 2){
             formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
             formElts[i].style = 'border-color:#DDDDDD'; 
         }
-/* 
-       if(formElts[i].value.trim().length == 0){
-        formElts[i].parentElement.querySelector('span').style = "visibility:visible;";
-        formElts[i].style = 'border-color:#FF3838';
-        error = true;
-       }else{
-        formElts[i].parentElement.querySelector('span').style = "visibility:hidden;";
-        formElts[i].style = 'border-color:#DDDDDD';
-       } */
     }
 
     if(error){
@@ -64,6 +55,9 @@ window.answerSubmissionFunc = function(quest,ans,correctAns,eltToRemove){
         document.querySelector('body').appendChild(testPageDesign(quest[i],answerOptionsRandomized,i));
         progressBarAndTimingManagementFunc();
         questionNumber++;
+      if(questionNumber === 15){
+        document.querySelector('.btn_next').value = 'Terminer';
+      }
     }else{
         eltToRemove.remove();
         document.querySelector('body').appendChild(userOutputPage(user,userCorrectAnswers,questions));
